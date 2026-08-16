@@ -22,5 +22,22 @@ export default async function Home() {
     console.error("Failed to fetch countries on build:", e);
   }
 
-  return <HomeClient initialCountries={countries || []} />;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "世界の両替事情 (World Currency Guide)",
+    description:
+      "主要15カ国のキャッシュレス比率、おすすめ両替所、手数料最安のATM、現金の必要性を徹底解説する総合ガイド。",
+    inLanguage: "ja-JP",
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <HomeClient initialCountries={countries || []} />
+    </>
+  );
 }
