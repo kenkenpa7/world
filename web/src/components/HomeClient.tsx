@@ -72,61 +72,63 @@ export function HomeClient({ initialCountries }: { initialCountries: any[] }) {
         </div>
       </header>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-6 sm:pt-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
         
-        {/* Bento Grid (国一覧: スマホ2列 -> PC3~4列) */}
-        <div className="w-full grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5">
+        {/* Simple Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
           {filteredCountries.length === 0 ? (
-            <div className="col-span-full text-center py-12 text-slate-500 font-bold text-sm bg-white/80 rounded-2xl border border-slate-200 backdrop-blur-md">
+            <div className="col-span-full text-center py-12 text-slate-500">
               該当する国が見つかりません
             </div>
           ) : (
-            filteredCountries.map((country: any, i: number) => (
-              <AnimateIn key={country.slug} delay={0.05 + (i * 0.03)} className="h-full">
-                <Link href={`/country/${country.slug}`} className="block group cursor-pointer h-full">
-                  <div className="w-full h-full bg-white/95 border border-slate-200 rounded-xl p-3 sm:p-4 shadow-sm hover:shadow-md hover:border-blue-400 backdrop-blur-xl transition-all duration-300 flex flex-col">
-                    
-                    {/* ヘッダー: 国旗、国名、通貨をコンパクトに横並び（または綺麗に2行に収める） */}
-                    <div className="border-b border-slate-200 pb-2 mb-3 flex items-center justify-between gap-1">
-                      <div className="flex items-center gap-1.5 min-w-0">
-                        {country.countryCode ? (
-                          <img src={`https://flagcdn.com/w40/${country.countryCode}.png`} alt={`${country.name} flag`} className="w-7 sm:w-8 h-auto shadow-sm border border-slate-100 shrink-0 rounded-sm" />
-                        ) : (
-                          <span className="text-2xl sm:text-3xl shrink-0 leading-none">🏳️</span>
-                        )}
-                        <h3 className="text-sm sm:text-base font-black text-slate-900 group-hover:text-blue-600 transition-colors leading-none truncate">
+            filteredCountries.map((country: any) => (
+              <Link key={country.slug} href={`/country/${country.slug}`} className="block group">
+                <div className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 p-4 h-full flex flex-col">
+                  
+                  {/* ヘッダー: 国旗、国名、通貨 */}
+                  <div className="border-b border-slate-100 pb-3 mb-3">
+                    <div className="flex items-center gap-3">
+                      {country.countryCode ? (
+                        <img src={`https://flagcdn.com/w40/${country.countryCode}.png`} alt={`${country.name} flag`} className="w-8 h-auto shadow-sm border border-slate-100" />
+                      ) : (
+                        <span className="text-2xl leading-none">🏳️</span>
+                      )}
+                      <div>
+                        <h3 className="font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
                           {country.name}
                         </h3>
-                      </div>
-                      <div className="text-[9px] sm:text-[10px] font-bold text-slate-500 text-right shrink-0">
-                        {country.currency || "未設定"}
-                      </div>
-                    </div>
-
-                    {/* 3行構成のテキスト (ぶら下がりインデントで文字の左側を完璧に揃える) */}
-                    <div className="flex-grow text-[11px] sm:text-xs font-bold text-slate-700 leading-snug space-y-2 mb-3">
-                      <div className="flex items-start gap-1">
-                        <span className="shrink-0 pt-0.5">•</span>
-                        <span className="line-clamp-2">{country.paymentSummary}</span>
-                      </div>
-                      <div className="flex items-start gap-1">
-                        <span className="shrink-0 pt-0.5">•</span>
-                        <span className="line-clamp-2">{country.exchangeSummary}</span>
-                      </div>
-                      <div className="flex items-start gap-1">
-                        <span className="shrink-0 pt-0.5">•</span>
-                        <span className="line-clamp-2">{country.trivia}</span>
+                        <div className="text-xs text-slate-500 mt-0.5">
+                          {country.currency || "未設定"}
+                        </div>
                       </div>
                     </div>
-
-                    {/* フッター: 詳細ナビ */}
-                    <div className="pt-2.5 border-t border-slate-200 flex justify-end text-[10px] sm:text-xs font-bold text-blue-600 group-hover:text-blue-700 mt-auto transition-colors">
-                      <span>お得な両替情報 &rarr;</span>
-                    </div>
-
                   </div>
-                </Link>
-              </AnimateIn>
+
+                  {/* 3行構成のテキスト */}
+                  <div className="flex-grow text-[13px] leading-snug tracking-tight text-slate-600 space-y-1.5 mb-4">
+                    <div className="flex items-start gap-1.5">
+                      <span className="shrink-0 text-slate-400">•</span>
+                      <span>{country.paymentSummary}</span>
+                    </div>
+                    <div className="flex items-start gap-1.5">
+                      <span className="shrink-0 text-slate-400">•</span>
+                      <span>{country.exchangeSummary}</span>
+                    </div>
+                    <div className="flex items-start gap-1.5">
+                      <span className="shrink-0 text-slate-400">•</span>
+                      <span>{country.trivia}</span>
+                    </div>
+                  </div>
+
+                  {/* フッター */}
+                  <div className="pt-3 border-t border-slate-100 text-xs font-medium text-blue-600 flex justify-end items-center gap-4 mt-auto">
+                    <span>お得な両替情報</span>
+                    <div className="w-7 h-7 rounded-full flex items-center justify-center transition-colors duration-200 group-hover:bg-blue-600">
+                      <ArrowRight className="w-4 h-4 text-blue-600 group-hover:text-white group-hover:translate-x-0.5 transition-all duration-200" />
+                    </div>
+                  </div>
+                </div>
+              </Link>
             ))
           )}
         </div>
