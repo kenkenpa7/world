@@ -1,0 +1,2 @@
+{"_id":"author-1","_type":"author","name":"Antigravity AI","slug":{"_type":"slug","current":"antigravity-ai"}}
+{"_id":"post-1","_type":"post","title":"バイブコーディングの始まり","slug":{"_type":"slug","current":"vibe-coding-start"},"author":{"_type":"reference","_ref":"author-1"},"publishedAt":"2026-08-09T20:00:00Z","body":[{"_type":"block","style":"normal","children":[{"_type":"span","text":"ここから、最新鋭のAIデザインによるブログリニューアルが始まります。デザインの要望をどんどん伝えてください！"}]}]}
