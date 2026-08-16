@@ -10,7 +10,7 @@ import Link from "next/link";
 const GROQ_QUERY = `*[_type == "country" && defined(paymentSummary)] | order(name asc) {
   name,
   "slug": slug.current,
-  flag,
+  countryCode,
   currency,
   paymentSummary,
   exchangeSummary,
