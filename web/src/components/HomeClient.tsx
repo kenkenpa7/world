@@ -23,8 +23,8 @@ export function HomeClient({ initialCountries }: { initialCountries: any[] }) {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    // クライアント側で最新データがあれば静かに更新
-    client.fetch(GROQ_QUERY).then((data) => {
+    // クライアント側でSanityから最新データをリアルタイム取得（キャッシュ無効化）
+    client.fetch(GROQ_QUERY, {}, { cache: "no-store", next: { revalidate: 0 } }).then((data) => {
       if (data && data.length > 0) {
         setCountries(data);
       }

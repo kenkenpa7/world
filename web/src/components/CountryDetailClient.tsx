@@ -11,9 +11,9 @@ export function CountryDetailClient({ initialData, slug }: { initialData: any, s
   const [country, setCountry] = useState<any>(initialData);
 
   useEffect(() => {
-    // ブラウザ側でSanityの最新データをリアルタイム取得
+    // ブラウザ側でSanityの最新データをリアルタイム取得（キャッシュ無効化）
     const query = `*[_type == "country" && slug.current == $slug][0]`;
-    client.fetch(query, { slug }).then((freshData) => {
+    client.fetch(query, { slug }, { cache: "no-store", next: { revalidate: 0 } }).then((freshData) => {
       if (freshData) {
         setCountry(freshData);
       }
