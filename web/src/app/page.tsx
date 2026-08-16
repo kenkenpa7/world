@@ -3,15 +3,15 @@ import { HomeClient } from "@/components/HomeClient";
 
 export const revalidate = 60;
 
-const GROQ_QUERY = `*[_type == "country"] | order(name asc) {
+const GROQ_QUERY = `*[_type == "country" && defined(paymentSummary)] | order(name asc) {
   name,
   "slug": slug.current,
+  countryCode,
   currency,
-  cashRatio,
-  bestExchange,
-  atmSafety,
-  lastUpdated,
-  catchphrase
+  paymentSummary,
+  exchangeSummary,
+  trivia,
+  lastUpdated
 }`;
 
 export default async function Home() {

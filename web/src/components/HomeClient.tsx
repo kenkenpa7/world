@@ -7,15 +7,15 @@ import { Search, Globe2, ShieldCheck, MapPin, ArrowRight } from "lucide-react";
 import { client } from "@/lib/sanity";
 import Link from "next/link";
 
-const GROQ_QUERY = `*[_type == "country"] | order(name asc) {
+const GROQ_QUERY = `*[_type == "country" && defined(paymentSummary)] | order(name asc) {
   name,
   "slug": slug.current,
+  flag,
   currency,
-  cashRatio,
-  bestExchange,
-  atmSafety,
-  lastUpdated,
-  catchphrase
+  paymentSummary,
+  exchangeSummary,
+  trivia,
+  lastUpdated
 }`;
 
 export function HomeClient({ initialCountries }: { initialCountries: any[] }) {
@@ -40,123 +40,88 @@ export function HomeClient({ initialCountries }: { initialCountries: any[] }) {
   );
 
   return (
-    <main className="min-h-screen text-slate-900 selection:bg-blue-100 relative">
-      {/* 3D地球背景 */}
-      <SplineBackground url="https://my.spline.design/3dprojectionnoiseyachting-EPCgujQjMsZY8Aoxc2glwYh4-hYW/" />
+    <main className="min-h-screen bg-[#ebedf2] text-slate-900 selection:bg-blue-100 relative pb-24 font-sans">
+      {/* 3D地球背景 (透過して固定) */}
+      <div className="fixed inset-0 z-0 opacity-40 pointer-events-none">
+        <SplineBackground url="https://my.spline.design/3dprojectionnoiseyachting-EPCgujQjMsZY8Aoxc2glwYh4-hYW/" />
+      </div>
 
-      <div className="container mx-auto max-w-5xl px-6 flex flex-col items-center pt-24 pb-24 relative z-10 pointer-events-none">
-        
-        {/* Hero */}
-        <AnimateIn delay={0.1} className="w-full flex flex-col items-center text-center mb-16 pointer-events-auto">
-          <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 bg-white/90 border border-slate-200 shadow-sm mb-6 backdrop-blur-md">
-            <Globe2 className="w-4 h-4 text-blue-600" />
-            <span className="text-[11px] uppercase tracking-[0.2em] font-semibold text-slate-600">
-              World Currency Guide
-            </span>
+      {/* スマートヘッダー */}
+      <header className="sticky top-0 z-50 bg-white/85 backdrop-blur-xl border-b border-slate-300/60 shadow-sm py-3">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <Globe2 className="w-6 h-6 text-blue-600" />
+            <div>
+              <h1 className="text-base sm:text-lg font-black tracking-wide text-slate-900 leading-none">世界の両替事情</h1>
+              <p className="text-[10px] text-slate-500 font-bold tracking-wider uppercase mt-1">World Currency Guide</p>
+            </div>
           </div>
           
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 text-slate-900 drop-shadow-sm">
-            世界の両替事情
-          </h1>
-          <p className="text-base md:text-lg text-slate-700 max-w-2xl font-normal leading-relaxed mb-10 drop-shadow-sm">
-            旅行先を選ぶと、現金とカードの比率、安全なATM、そして一番お得な両替方法が一目でわかります。手数料の損を防ぐ完全ガイド。
-          </p>
-
-          <div className="w-full max-w-xl relative">
-            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-slate-400" />
+          <div className="w-full sm:w-80 relative">
+            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+              <Search className="h-4 w-4 text-slate-400" />
             </div>
             <input 
               type="text" 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="国名や都市名で検索..." 
-              className="w-full bg-white/95 border border-slate-200 shadow-md rounded-2xl py-4 pl-12 pr-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 backdrop-blur-xl transition-all"
+              placeholder="国名や通貨で検索..." 
+              className="w-full bg-white border border-slate-300 rounded-full py-2 pl-9 pr-4 text-sm font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-sm"
             />
           </div>
-        </AnimateIn>
+        </div>
+      </header>
 
-        {/* 広告スペース */}
-        <AnimateIn delay={0.2} className="w-full max-w-3xl mb-12 pointer-events-auto">
-          <div className="w-full bg-white/80 border border-dashed border-slate-300 rounded-xl p-4 flex flex-col items-center justify-center text-slate-400 text-sm h-20 shadow-sm backdrop-blur-md">
-            [ AdSense / Sponsor Banner Space ]
-          </div>
-        </AnimateIn>
-
-        {/* Bento Grid (国一覧) */}
-        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6 pointer-events-auto">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-6 sm:pt-8 relative z-10">
+        
+        {/* Bento Grid (国一覧: スマホ2列 -> PC3~4列) */}
+        <div className="w-full grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5">
           {filteredCountries.length === 0 ? (
-            <div className="col-span-full text-center py-12 text-slate-400 font-mono text-sm bg-white/80 rounded-2xl border border-slate-200 backdrop-blur-md">
+            <div className="col-span-full text-center py-12 text-slate-500 font-bold text-sm bg-white/80 rounded-2xl border border-slate-200 backdrop-blur-md">
               該当する国が見つかりません
             </div>
           ) : (
             filteredCountries.map((country: any, i: number) => (
-              <AnimateIn key={country.slug} delay={0.05 + (i * 0.03)}>
+              <AnimateIn key={country.slug} delay={0.05 + (i * 0.03)} className="h-full">
                 <Link href={`/country/${country.slug}`} className="block group cursor-pointer h-full">
-                  <div className="w-full h-full bg-white/90 border border-slate-200 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:border-blue-300 backdrop-blur-xl transition-all duration-300 relative overflow-hidden flex flex-col justify-between">
+                  <div className="w-full h-full bg-white/95 border border-slate-200 rounded-xl p-3 sm:p-4 shadow-sm hover:shadow-md hover:border-blue-400 backdrop-blur-xl transition-all duration-300 flex flex-col">
                     
-                    <div>
-                      <div className="flex justify-between items-start mb-6">
-                        <div>
-                          <h3 className="text-2xl font-bold text-slate-900 mb-1 group-hover:text-blue-600 transition-colors">
-                            {country.name}
-                          </h3>
-                          <div className="flex items-center gap-2 mt-1">
-                            <span className="text-xs font-medium text-blue-700 bg-blue-50 border border-blue-100 px-2.5 py-0.5 rounded-full">
-                              {country.catchphrase || '詳細を見る'}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="text-right flex flex-col items-end">
-                          <p className="text-lg font-mono font-bold text-slate-700">{country.currency}</p>
-                          {country.lastUpdated && (
-                            <p className="text-[10px] text-slate-400 mt-1 flex items-center gap-1">
-                              <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                              Updated {country.lastUpdated.replace('-', '.').substring(0, 7)}
-                            </p>
-                          )}
-                        </div>
+                    {/* ヘッダー: 国旗、国名、通貨をコンパクトに横並び（または綺麗に2行に収める） */}
+                    <div className="border-b border-slate-200 pb-2 mb-3 flex items-center justify-between gap-1">
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        {country.countryCode ? (
+                          <img src={`https://flagcdn.com/w40/${country.countryCode}.png`} alt={`${country.name} flag`} className="w-7 sm:w-8 h-auto shadow-sm border border-slate-100 shrink-0 rounded-sm" />
+                        ) : (
+                          <span className="text-2xl sm:text-3xl shrink-0 leading-none">🏳️</span>
+                        )}
+                        <h3 className="text-sm sm:text-base font-black text-slate-900 group-hover:text-blue-600 transition-colors leading-none truncate">
+                          {country.name}
+                        </h3>
                       </div>
-
-                      <div className="space-y-4">
-                        <div>
-                          <div className="flex justify-between text-xs font-semibold text-slate-500 mb-1.5">
-                            <span>現金派</span>
-                            <span>{country.cashRatio || 0}%</span>
-                          </div>
-                          <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full transition-all duration-1000 ease-out" 
-                              style={{ width: `${country.cashRatio || 0}%` }}
-                            />
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-3 text-sm text-slate-600 pt-3 border-t border-slate-100">
-                          <MapPin className="w-4 h-4 text-blue-500 flex-shrink-0" />
-                          <span>最適解: <strong className="text-slate-800 font-semibold">
-                            {country.bestExchange === 'japan' ? '日本国内' : 
-                             country.bestExchange === 'local_airport' ? '現地空港' : 
-                             country.bestExchange === 'local_city' ? '現地市街地' : 
-                             country.bestExchange === 'atm_cashing' ? 'ATMキャッシング' : 
-                             country.bestExchange === 'wise' ? 'Wise / オンライン' : '未設定'}
-                          </strong></span>
-                        </div>
-                        
-                        <div className="flex items-center gap-3 text-sm text-slate-600">
-                          <ShieldCheck className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                          <span>ATM安全性: <strong className="text-slate-800 font-semibold">
-                            {country.atmSafety === 'high' ? '安全' : 
-                             country.atmSafety === 'medium' ? '普通' : 
-                             country.atmSafety === 'low' ? '危険' : '未設定'}
-                          </strong></span>
-                        </div>
+                      <div className="text-[9px] sm:text-[10px] font-bold text-slate-500 text-right shrink-0">
+                        {country.currency || "未設定"}
                       </div>
                     </div>
 
-                    <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-blue-600 group-hover:translate-x-1 transition-transform">
-                      <span>詳細な決済・両替ガイド</span>
-                      <ArrowRight className="w-4 h-4" />
+                    {/* 3行構成のテキスト (ぶら下がりインデントで文字の左側を完璧に揃える) */}
+                    <div className="flex-grow text-[11px] sm:text-xs font-bold text-slate-700 leading-snug space-y-2 mb-3">
+                      <div className="flex items-start gap-1">
+                        <span className="shrink-0 pt-0.5">•</span>
+                        <span className="line-clamp-2">{country.paymentSummary}</span>
+                      </div>
+                      <div className="flex items-start gap-1">
+                        <span className="shrink-0 pt-0.5">•</span>
+                        <span className="line-clamp-2">{country.exchangeSummary}</span>
+                      </div>
+                      <div className="flex items-start gap-1">
+                        <span className="shrink-0 pt-0.5">•</span>
+                        <span className="line-clamp-2">{country.trivia}</span>
+                      </div>
+                    </div>
+
+                    {/* フッター: 詳細ナビ */}
+                    <div className="pt-2.5 border-t border-slate-200 flex justify-end text-[10px] sm:text-xs font-bold text-blue-600 group-hover:text-blue-700 mt-auto transition-colors">
+                      <span>お得な両替情報 &rarr;</span>
                     </div>
 
                   </div>
@@ -165,7 +130,6 @@ export function HomeClient({ initialCountries }: { initialCountries: any[] }) {
             ))
           )}
         </div>
-        
       </div>
     </main>
   );
