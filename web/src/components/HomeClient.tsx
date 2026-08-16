@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { SplineBackground } from "@/components/SplineBackground";
 import { AnimateIn } from "@/components/AnimateIn";
 import { Search, Globe2, ShieldCheck, MapPin, ArrowRight } from "lucide-react";
 import { client } from "@/lib/sanity";
@@ -39,23 +40,25 @@ export function HomeClient({ initialCountries }: { initialCountries: any[] }) {
   );
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900 selection:bg-slate-200">
-      
-      <div className="container mx-auto max-w-5xl px-6 flex flex-col items-center pt-24 pb-24">
+    <main className="min-h-screen text-slate-900 selection:bg-blue-100 relative">
+      {/* 3D地球背景 */}
+      <SplineBackground url="https://my.spline.design/3dprojectionnoiseyachting-EPCgujQjMsZY8Aoxc2glwYh4-hYW/" />
+
+      <div className="container mx-auto max-w-5xl px-6 flex flex-col items-center pt-24 pb-24 relative z-10 pointer-events-none">
         
         {/* Hero */}
-        <AnimateIn delay={0.1} className="w-full flex flex-col items-center text-center mb-16">
-          <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 bg-white border border-slate-200 shadow-sm mb-6">
+        <AnimateIn delay={0.1} className="w-full flex flex-col items-center text-center mb-16 pointer-events-auto">
+          <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 bg-white/90 border border-slate-200 shadow-sm mb-6 backdrop-blur-md">
             <Globe2 className="w-4 h-4 text-blue-600" />
             <span className="text-[11px] uppercase tracking-[0.2em] font-semibold text-slate-600">
               World Currency Guide
             </span>
           </div>
           
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 text-slate-900">
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 text-slate-900 drop-shadow-sm">
             世界の両替事情
           </h1>
-          <p className="text-base md:text-lg text-slate-600 max-w-2xl font-normal leading-relaxed mb-10">
+          <p className="text-base md:text-lg text-slate-700 max-w-2xl font-normal leading-relaxed mb-10 drop-shadow-sm">
             旅行先を選ぶと、現金とカードの比率、安全なATM、そして一番お得な両替方法が一目でわかります。手数料の損を防ぐ完全ガイド。
           </p>
 
@@ -68,29 +71,29 @@ export function HomeClient({ initialCountries }: { initialCountries: any[] }) {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="国名や都市名で検索..." 
-              className="w-full bg-white border border-slate-200 shadow-sm rounded-2xl py-4 pl-12 pr-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+              className="w-full bg-white/95 border border-slate-200 shadow-md rounded-2xl py-4 pl-12 pr-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 backdrop-blur-xl transition-all"
             />
           </div>
         </AnimateIn>
 
         {/* 広告スペース */}
-        <AnimateIn delay={0.2} className="w-full max-w-3xl mb-12">
-          <div className="w-full bg-white border border-dashed border-slate-300 rounded-xl p-4 flex flex-col items-center justify-center text-slate-400 text-sm h-20 shadow-sm">
+        <AnimateIn delay={0.2} className="w-full max-w-3xl mb-12 pointer-events-auto">
+          <div className="w-full bg-white/80 border border-dashed border-slate-300 rounded-xl p-4 flex flex-col items-center justify-center text-slate-400 text-sm h-20 shadow-sm backdrop-blur-md">
             [ AdSense / Sponsor Banner Space ]
           </div>
         </AnimateIn>
 
         {/* Bento Grid (国一覧) */}
-        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6 pointer-events-auto">
           {filteredCountries.length === 0 ? (
-            <div className="col-span-full text-center py-12 text-slate-400 font-mono text-sm">
+            <div className="col-span-full text-center py-12 text-slate-400 font-mono text-sm bg-white/80 rounded-2xl border border-slate-200 backdrop-blur-md">
               該当する国が見つかりません
             </div>
           ) : (
             filteredCountries.map((country: any, i: number) => (
               <AnimateIn key={country.slug} delay={0.05 + (i * 0.03)}>
                 <Link href={`/country/${country.slug}`} className="block group cursor-pointer h-full">
-                  <div className="w-full h-full bg-white border border-slate-200 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:border-blue-300 transition-all duration-300 relative overflow-hidden flex flex-col justify-between">
+                  <div className="w-full h-full bg-white/90 border border-slate-200 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:border-blue-300 backdrop-blur-xl transition-all duration-300 relative overflow-hidden flex flex-col justify-between">
                     
                     <div>
                       <div className="flex justify-between items-start mb-6">
