@@ -11,7 +11,6 @@ export function CountryDetailClient({ initialData, slug }: { initialData: any, s
   const [country, setCountry] = useState<any>(initialData);
 
   useEffect(() => {
-    // ブラウザ側でSanityの最新データをリアルタイム取得（キャッシュ無効化）
     const query = `*[_type == "country" && slug.current == $slug][0]`;
     client.fetch(query, { slug }, { cache: "no-store", next: { revalidate: 0 } }).then((freshData) => {
       if (freshData) {
@@ -22,7 +21,7 @@ export function CountryDetailClient({ initialData, slug }: { initialData: any, s
 
   if (!country) {
     return (
-      <div className="min-h-screen bg-[#050505] text-white flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 text-slate-900 flex items-center justify-center">
         読み込み中...
       </div>
     );
@@ -50,55 +49,55 @@ export function CountryDetailClient({ initialData, slug }: { initialData: any, s
 
   const portableTextComponents = {
     block: {
-      h2: ({children}: any) => <h2 className="text-2xl font-bold text-white mt-12 mb-6 border-b border-white/10 pb-4 flex items-center gap-2"><Info className="w-5 h-5 text-white/50" />{children}</h2>,
-      h3: ({children}: any) => <h3 className="text-xl font-bold text-white/90 mt-8 mb-4 border-l-2 border-white/20 pl-3">{children}</h3>,
-      normal: ({children}: any) => <p className="text-white/70 leading-loose mb-6">{children}</p>,
+      h2: ({children}: any) => <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-6 border-b border-slate-200 pb-3 flex items-center gap-2"><Info className="w-5 h-5 text-blue-600" />{children}</h2>,
+      h3: ({children}: any) => <h3 className="text-xl font-bold text-slate-800 mt-8 mb-4 border-l-4 border-blue-500 pl-3">{children}</h3>,
+      normal: ({children}: any) => <p className="text-slate-700 leading-relaxed mb-6">{children}</p>,
     },
   };
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white/90 selection:bg-white/20 pb-24">
-      {/* 簡易ヘッダー */}
-      <div className="w-full border-b border-white/5 bg-black/50 backdrop-blur-xl sticky top-0 z-50">
+    <main className="min-h-screen bg-slate-50 text-slate-900 selection:bg-slate-200 pb-24">
+      {/* ヘッダー */}
+      <div className="w-full border-b border-slate-200 bg-white/80 backdrop-blur-xl sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto max-w-4xl px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-white/50 hover:text-white transition-colors">
+          <Link href="/" className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition-colors font-medium text-sm">
             <ArrowLeft className="w-4 h-4" />
-            <span className="text-sm tracking-widest uppercase">Back to List</span>
+            <span>国一覧に戻る</span>
           </Link>
-          <div className="text-sm font-medium tracking-widest text-white/80">World Currency Guide</div>
+          <div className="text-sm font-semibold tracking-wide text-slate-800">World Currency Guide</div>
         </div>
       </div>
 
-      <div className="container mx-auto max-w-4xl px-6 mt-16">
+      <div className="container mx-auto max-w-4xl px-6 mt-12">
         <AnimateIn>
           {/* ヒーローセクション */}
-          <div className="flex flex-col md:flex-row items-center gap-8 mb-16 border-b border-white/10 pb-16">
+          <div className="flex flex-col md:flex-row items-center gap-8 mb-12 bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
             {country.flag ? (
               <img 
                 src={urlFor(country.flag).width(400).url()} 
                 alt={`${country.name} Flag`} 
-                className="w-48 h-auto rounded-lg shadow-2xl border border-white/10"
+                className="w-44 h-auto rounded-xl shadow-md border border-slate-200"
               />
             ) : (
-              <div className="w-48 h-32 bg-white/5 rounded-lg border border-white/10 flex items-center justify-center text-white/20 text-sm">
+              <div className="w-44 h-28 bg-slate-100 rounded-xl border border-slate-200 flex items-center justify-center text-slate-400 text-sm">
                 No Flag
               </div>
             )}
             
             <div>
-              <h1 className="text-5xl md:text-6xl font-extrabold tracking-tighter mb-4 text-white">
+              <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-slate-900">
                 {country.name}
               </h1>
-              <div className="flex items-center flex-wrap gap-4 text-white/60 text-lg">
-                <span className="font-mono bg-white/10 px-3 py-1 rounded-md text-white">{country.currency}</span>
+              <div className="flex items-center flex-wrap gap-3 text-slate-600 text-base">
+                <span className="font-mono font-bold bg-slate-100 border border-slate-200 px-3 py-1 rounded-lg text-slate-800">{country.currency}</span>
                 {country.catchphrase && (
-                  <span className="bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-white/10 px-3 py-1 rounded-full text-white/90 text-sm">
+                  <span className="bg-blue-50 border border-blue-200 text-blue-800 font-semibold px-3 py-1 rounded-full text-xs">
                     {country.catchphrase}
                   </span>
                 )}
                 {country.lastUpdated && (
-                  <span className="text-xs flex items-center gap-1 text-white/40">
-                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-500/60"></span>
+                  <span className="text-xs flex items-center gap-1 text-slate-400">
+                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                     Updated {country.lastUpdated}
                   </span>
                 )}
@@ -108,81 +107,81 @@ export function CountryDetailClient({ initialData, slug }: { initialData: any, s
         </AnimateIn>
 
         {/* トップ広告スペース */}
-        <AnimateIn delay={0.2} className="w-full mb-16">
-          <div className="w-full bg-white/5 border border-white/5 rounded-xl p-4 flex flex-col items-center justify-center text-white/30 text-sm h-24">
+        <AnimateIn delay={0.1} className="w-full mb-10">
+          <div className="w-full bg-white border border-dashed border-slate-300 rounded-xl p-4 flex flex-col items-center justify-center text-slate-400 text-sm h-20 shadow-sm">
             [ AdSense / Sponsor Banner Space ]
           </div>
         </AnimateIn>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
           {/* 現金 vs カード 比率 */}
-          <AnimateIn delay={0.3} className="bg-black/60 border border-white/10 rounded-3xl p-8">
-            <div className="flex items-center gap-3 mb-6 text-xl font-bold text-white">
-              <Wallet className="w-5 h-5 text-white/60" />
+          <AnimateIn delay={0.2} className="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
+            <div className="flex items-center gap-3 mb-6 text-lg font-bold text-slate-900">
+              <Wallet className="w-5 h-5 text-blue-600" />
               1. 現金とカード、どっちが必要？
             </div>
             
-            <div className="relative pt-8 pb-4">
-              <div className="flex justify-between text-sm text-white/60 mb-3">
+            <div className="relative pt-4 pb-2">
+              <div className="flex justify-between text-xs font-semibold text-slate-500 mb-2">
                 <span>完全キャッシュレス (0%)</span>
                 <span>現金主義 (100%)</span>
               </div>
-              <div className="w-full h-4 bg-white/10 rounded-full overflow-hidden relative">
+              <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden relative">
                 <div 
-                  className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full" 
+                  className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full" 
                   style={{ width: `${country.cashRatio || 0}%` }}
                 />
               </div>
               <div className="mt-6 text-center">
-                <p className="text-sm text-white/60">現金が必要な割合</p>
-                <p className="text-4xl font-extrabold text-white mt-1">{country.cashRatio || 0}<span className="text-xl text-white/50">%</span></p>
+                <p className="text-xs text-slate-500 font-medium">現金が必要な割合</p>
+                <p className="text-4xl font-extrabold text-slate-900 mt-1">{country.cashRatio || 0}<span className="text-lg text-slate-500 font-normal">%</span></p>
               </div>
             </div>
           </AnimateIn>
 
           {/* 最適な両替場所 */}
-          <AnimateIn delay={0.4} className="bg-black/60 border border-white/10 rounded-3xl p-8">
-            <div className="flex items-center gap-3 mb-6 text-xl font-bold text-white">
-              <Landmark className="w-5 h-5 text-white/60" />
+          <AnimateIn delay={0.3} className="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm flex flex-col justify-between">
+            <div className="flex items-center gap-3 mb-4 text-lg font-bold text-slate-900">
+              <Landmark className="w-5 h-5 text-blue-600" />
               2. どこで両替するのがお得？
             </div>
-            <div className="flex flex-col items-center justify-center h-40 text-center">
-              <span className="text-sm text-white/50 mb-2">【結論】最適解はここ！</span>
-              <span className="text-3xl font-bold text-white mb-4">{getExchangeLabel(country.bestExchange)}</span>
+            <div className="flex flex-col items-center justify-center my-auto py-4 text-center">
+              <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full mb-3">【結論】最適解はここ！</span>
+              <span className="text-3xl font-extrabold text-slate-900 mb-4">{getExchangeLabel(country.bestExchange)}</span>
               
-              <div className="flex items-center gap-2 bg-white/5 px-4 py-2 rounded-full border border-white/10 text-sm">
-                <ShieldCheck className="w-4 h-4 text-white/50" />
-                <span className="text-white/70">ATMの安全性: <strong className="text-white">{getSafetyLabel(country.atmSafety)}</strong></span>
+              <div className="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-full border border-slate-200 text-xs">
+                <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                <span className="text-slate-600">ATMの安全性: <strong className="text-slate-900">{getSafetyLabel(country.atmSafety)}</strong></span>
               </div>
             </div>
           </AnimateIn>
         </div>
 
         {/* シーン別早見表＆チップ */}
-        <AnimateIn delay={0.5} className="bg-black/60 border border-white/10 rounded-3xl p-8 mb-16">
+        <AnimateIn delay={0.4} className="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm mb-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <div className="flex items-center gap-3 mb-4 text-base font-bold text-white">
-                <Train className="w-4 h-4 text-white/60" />
+              <div className="flex items-center gap-2.5 mb-3 text-sm font-bold text-slate-900">
+                <Train className="w-4 h-4 text-blue-600" />
                 交通機関
               </div>
-              <p className="text-white/70 text-sm">{country.sceneTransport || "データなし"}</p>
+              <p className="text-slate-600 text-sm leading-relaxed">{country.sceneTransport || "データなし"}</p>
             </div>
             <div>
-              <div className="flex items-center gap-3 mb-4 text-base font-bold text-white">
-                <Utensils className="w-4 h-4 text-white/60" />
+              <div className="flex items-center gap-2.5 mb-3 text-sm font-bold text-slate-900">
+                <Utensils className="w-4 h-4 text-blue-600" />
                 飲食店・屋台
               </div>
-              <p className="text-white/70 text-sm">{country.sceneFood || "データなし"}</p>
+              <p className="text-slate-600 text-sm leading-relaxed">{country.sceneFood || "データなし"}</p>
             </div>
             <div>
-              <div className="flex items-center gap-3 mb-4 text-base font-bold text-white">
-                <HeartHandshake className="w-4 h-4 text-white/60" />
+              <div className="flex items-center gap-2.5 mb-3 text-sm font-bold text-slate-900">
+                <HeartHandshake className="w-4 h-4 text-blue-600" />
                 チップ文化
               </div>
-              <p className="text-white/70 text-sm">
-                <strong className="text-white">{country.tipping ? "あり (必須・推奨)" : "なし (不要)"}</strong><br/>
-                <span className="text-white/40 text-xs mt-1 block">
+              <p className="text-slate-600 text-sm leading-relaxed">
+                <strong className="text-slate-900">{country.tipping ? "あり (必須・推奨)" : "なし (不要)"}</strong><br/>
+                <span className="text-slate-400 text-xs mt-1 block">
                   {country.tipping ? "現金でチップを渡す文化があるため少額紙幣を持っておくと便利です。" : "特別なサービスを受けた場合を除き、基本的にチップは不要です。"}
                 </span>
               </p>
@@ -191,28 +190,28 @@ export function CountryDetailClient({ initialData, slug }: { initialData: any, s
         </AnimateIn>
 
         {/* リッチテキストによる詳細解説 */}
-        <AnimateIn delay={0.6} className="bg-gradient-to-br from-white/5 to-transparent border border-white/10 rounded-3xl p-8 md:p-12 mb-16">
+        <AnimateIn delay={0.5} className="bg-white border border-slate-200 rounded-3xl p-8 md:p-12 shadow-sm mb-12">
            {country.content ? (
-             <div className="prose prose-invert max-w-none">
+             <div className="prose max-w-none text-slate-700">
                <PortableText value={country.content} components={portableTextComponents} />
              </div>
            ) : (
-             <div className="text-white/70 leading-loose">
+             <div className="text-slate-400 leading-relaxed text-sm">
                詳細記事がまだ登録されていません。
              </div>
            )}
         </AnimateIn>
 
         {/* ボトム広告スペース */}
-        <AnimateIn delay={0.7} className="w-full mb-16">
-          <div className="w-full bg-white/5 border border-white/5 rounded-xl p-4 flex flex-col items-center justify-center text-white/30 text-sm h-32">
+        <AnimateIn delay={0.6} className="w-full mb-12">
+          <div className="w-full bg-white border border-dashed border-slate-300 rounded-xl p-4 flex flex-col items-center justify-center text-slate-400 text-sm h-24 shadow-sm">
             [ Affiliate Link / Credit Card Recommend Space ]
           </div>
         </AnimateIn>
         
         {/* 免責事項 */}
-        <div className="text-center text-white/30 text-xs mt-16 border-t border-white/5 pt-8">
-          ※本サイトの情報はAI調査に基づく参考情報です。現地の決済事情や手数料は変動するため、渡航前に最新の公式情報等をご確認ください。
+        <div className="text-center text-slate-400 text-xs mt-12 border-t border-slate-200 pt-8">
+          ※本サイトの情報は参考情報です。現地の決済事情や手数料は変動するため、渡航前に最新の公式情報等をご確認ください。
         </div>
       </div>
     </main>
